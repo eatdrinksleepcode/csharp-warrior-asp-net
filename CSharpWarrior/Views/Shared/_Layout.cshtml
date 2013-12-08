@@ -4,10 +4,13 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
+    
+     <script type="text/javascript" src="@Url.Content("~/Scripts/angular.min.js")"> </script>
 </head>
 <body>
-    <div>
+    <div ng-app="warrior" ng-controller="warriorController">
         @RenderBody()
-    </div>
+    </div> 
+   
 </body>
 </html>
