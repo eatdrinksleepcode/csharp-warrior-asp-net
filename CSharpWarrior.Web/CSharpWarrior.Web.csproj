@@ -147,6 +147,12 @@
   <ItemGroup>
     <Content Include="Scripts\angular.min.js.map" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CSharpWarrior.Domain\CSharpWarrior.Domain.csproj">
+      <Project>{2b9f5eac-c971-4c4d-a4fe-1c2a119348d4}</Project>
+      <Name>CSharpWarrior.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
