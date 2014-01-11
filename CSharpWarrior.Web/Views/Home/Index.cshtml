@@ -9,3 +9,6 @@
 {{ "Hello " + name }}
 
 <script type="text/javascript" src="@Url.Content("~/Scripts/app/app.js")"> </script>
+<textarea ng-model="code" cols="100" rows="20"></textarea><br/>
+<button ng-click="run()">Run</button><br/>
+<span ng-bind="output"></span>
