@@ -6,7 +6,7 @@
         $scope.code = "public class Player { }";
 
         $scope.run = function () {
-            $http.post('/api/level/1', { code: $scope.code })
+            $http.post('/api/level', { code: $scope.code } )
             .success(function (data) {
                 $scope.output = data;
             });
