@@ -68,7 +68,7 @@ namespace CSharpWarrior
         [Test]
         public void ShouldFailToRunDangerousCode()
         {
-            const string DangeroudCode = @"
+            const string DangerousCode = @"
                 public class Player : CSharpWarrior.IPlayer {
                     public string Play() {
                         System.IO.Directory.EnumerateFiles(@""C:\"");
@@ -76,7 +76,7 @@ namespace CSharpWarrior
                     }
                 }
                 ";
-            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(DangeroudCode));
+            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(DangerousCode));
             Assert.That(ex.Message, Is.EqualTo(Sandbox.DangerousCodeMessage));
             Assert.That(ex.InnerException, Is.Not.Null);
         }
