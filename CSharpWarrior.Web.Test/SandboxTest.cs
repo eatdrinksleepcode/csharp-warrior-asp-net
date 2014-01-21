@@ -4,45 +4,6 @@ namespace CSharpWarrior
 {
     public class SandboxTest
     {
-        private const string WorkingCode = @"
-public class Player {
-    public static string Play() {
-        return ""Success"";
-    }
-}
-";
-        private const string IncorrectCode = @"
-public class Player {
-    public static string DontPlay() {
-        return ""Failure"";
-    }
-}
-";
-
-        private const string NonCompilingCode = @"
-public class Player {
-    public static string Play() {
-        return ""Success"";
-    }
-
-";
-
-        private const string DangerousCode = @"
-public class Player {
-    public static string Play() {
-        return System.IO.File.ReadAllText(@""C:\freefallprotection.log"");
-    }
-}
-";
-
-        private const string FaultyCode = @"
-public class Player {
-    public static string Play() {
-        throw new System.Exception(""Fail!"");
-    }
-}
-";
-
         private Sandbox sandbox;
 
         [SetUp]
@@ -54,12 +15,23 @@ public class Player {
         [Test]
         public void ShouldRunProvidedCode()
         {
-            Assert.That(sandbox.Execute(WorkingCode), Is.EqualTo("Success"));
+            const string WorkingCode = @"
+                public class Player : CSharpWarrior.IPlayer {
+                    public string Play() {
+                        return ""Success"";
+                    }
+                }
+                ";
+            Assert.That(sandbox.Execute(WorkingCode), 
+            Is.EqualTo("Success"));
         }
 
         [Test]
         public void ShouldFailToRunNonCompilingCode()
         {
+            const string NonCompilingCode = @"
+                public class Player {
+                ";
             var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(NonCompilingCode));
             StringAssert.StartsWith(Sandbox.BadCodeMessage, ex.Message);
         }
@@ -67,6 +39,13 @@ public class Player {
         [Test]
         public void ShouldFailToRunIncorrectCode()
         {
+            const string IncorrectCode = @"
+                public class Player {
+                    public string Play() {
+                        return ""Failure"";
+                    }
+                }
+                ";
             var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(IncorrectCode));
             Assert.That(ex.Message, Is.EqualTo(Sandbox.IncorrectCodeMessage));
         }
@@ -74,6 +53,13 @@ public class Player {
         [Test]
         public void ShouldFailToRunFaultyCode()
         {
+            const string FaultyCode = @"
+                public class Player : CSharpWarrior.IPlayer {
+                    public string Play() {
+                        throw new System.Exception(""Fail!"");
+                    }
+                }
+                ";
             var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(FaultyCode));
             Assert.That(ex.Message, Is.EqualTo(Sandbox.FaultyCodeMessage));
             Assert.That(ex.InnerException, Is.Not.Null);
@@ -82,7 +68,15 @@ public class Player {
         [Test]
         public void ShouldFailToRunDangerousCode()
         {
-            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(DangerousCode));
+            const string DangeroudCode = @"
+                public class Player : CSharpWarrior.IPlayer {
+                    public string Play() {
+                        System.IO.Directory.EnumerateFiles(@""C:\"");
+                        return ""Haha!"";
+                    }
+                }
+                ";
+            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(DangeroudCode));
             Assert.That(ex.Message, Is.EqualTo(Sandbox.DangerousCodeMessage));
             Assert.That(ex.InnerException, Is.Not.Null);
         }

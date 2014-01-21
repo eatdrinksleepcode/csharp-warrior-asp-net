@@ -23,12 +23,12 @@ namespace CSharpWarrior
         private static readonly Type ExecutorType = typeof(RemoteExecutor);
 
         private AppDomain sandboxAppDomain;
-        private RemoteExecutor executor;
         private CSharpCodeProvider compiler = new CSharpCodeProvider();
         private CompilerParameters options = new CompilerParameters();
 
         public string Execute(string codeToCompile)
         {
+            options.ReferencedAssemblies.Add(IPlayerType.Assembly.Location);
             var compiledCode = compiler.CompileAssemblyFromSource(options, codeToCompile);
             if (compiledCode.Errors.Count > 0)
             {
@@ -36,7 +36,7 @@ namespace CSharpWarrior
                                                  compiledCode.Errors.Cast<CompilerError>().First().ErrorText);
             }
 
-            return (executor ?? (executor = CreateExecutor(compiledCode.PathToAssembly))).Execute(compiledCode.PathToAssembly);
+            return CreateExecutor(compiledCode.PathToAssembly).Execute(compiledCode.PathToAssembly);
         }
 
         private RemoteExecutor CreateExecutor(string pathToAssembly)
@@ -54,34 +54,32 @@ namespace CSharpWarrior
             return AppDomain.CreateDomain("Sandbox", null, AppDomain.CurrentDomain.SetupInformation, perms, ExecutorType.Assembly.Evidence.GetHostEvidence<StrongName>());
         }
 
+        private static readonly Type IPlayerType = typeof (IPlayer);
+
         public class RemoteExecutor : MarshalByRefObject
         {
             public string Execute(string pathToAssembly)
             {
                 var loadedAssembly = Assembly.LoadFrom(pathToAssembly);
-                var playMethod = (from type in loadedAssembly.GetTypes()
-                                  where type.Name == "Player" && type.IsPublic
-                                  from method in type.GetMethods(BindingFlags.Static | BindingFlags.Public)
-                                  where method.Name == "Play" && method.GetParameters().Length == 0 && method.ReturnType == typeof(string)
-                                  select method).FirstOrDefault();
-                if (null == playMethod)
+                var player = (from type in loadedAssembly.GetTypes()
+                              where type.IsPublic && IPlayerType.IsAssignableFrom(type)
+                              select (IPlayer)Activator.CreateInstance(type)
+                             ).FirstOrDefault();
+                if (null == player)
                 {
                     throw new CodeExecutionException(IncorrectCodeMessage);
                 }
                 try
                 {
-                    return (string)playMethod.Invoke(null, null);
+                    return player.Play();
                 }
-                catch (TargetInvocationException ex)
+                catch (SecurityException ex)
                 {
-                    if (ex.InnerException is SecurityException)
-                    {
-                        throw new CodeExecutionException(DangerousCodeMessage, ex.InnerException);
-                    }
-                    else
-                    {
-                        throw new CodeExecutionException(FaultyCodeMessage, ex.InnerException);
-                    }
+                    throw new CodeExecutionException(DangerousCodeMessage, ex);
+                }
+                catch (Exception ex)
+                {
+                    throw new CodeExecutionException(FaultyCodeMessage, ex);
                 }
             }
         }
