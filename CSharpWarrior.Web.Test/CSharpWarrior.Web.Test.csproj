@@ -66,9 +66,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LevelControllerTest.cs" />
+    <Compile Include="PlayerCompilerTest.cs" />
     <Compile Include="SandboxTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CSharpWarrior.Domain\CSharpWarrior.Domain.csproj">
+      <Project>{2B9F5EAC-C971-4C4D-A4FE-1C2A119348D4}</Project>
+      <Name>CSharpWarrior.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CSharpWarrior.Web\CSharpWarrior.Web.csproj">
       <Project>{e9c26f99-3fc2-4d76-a317-bb2a613c9521}</Project>
       <Name>CSharpWarrior.Web</Name>

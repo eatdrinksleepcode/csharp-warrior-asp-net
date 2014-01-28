@@ -23,20 +23,23 @@ namespace CSharpWarrior
         private static readonly Type ExecutorType = typeof(RemoteExecutor);
 
         private AppDomain sandboxAppDomain;
-        private CSharpCodeProvider compiler = new CSharpCodeProvider();
-        private CompilerParameters options = new CompilerParameters();
+        private readonly PlayerCompiler compiler = new PlayerCompiler();
 
-        public string Execute(string codeToCompile)
+        public string ExecuteCode(string codeToCompile, Level level)
         {
-            options.ReferencedAssemblies.Add(IPlayerType.Assembly.Location);
-            var compiledCode = compiler.CompileAssemblyFromSource(options, codeToCompile);
+            var compiledCode = compiler.Compile(codeToCompile);
             if (compiledCode.Errors.Count > 0)
             {
                 throw new CodeExecutionException(BadCodeMessage +
                                                  compiledCode.Errors.Cast<CompilerError>().First().ErrorText);
             }
 
-            return CreateExecutor(compiledCode.PathToAssembly).Execute(compiledCode.PathToAssembly);
+            return ExecuteAssembly(compiledCode.PathToAssembly, level);
+        }
+
+        public string ExecuteAssembly(string pathToAssembly, Level level)
+        {
+            return CreateExecutor(pathToAssembly).Execute(pathToAssembly, level);
         }
 
         private RemoteExecutor CreateExecutor(string pathToAssembly)
@@ -58,7 +61,7 @@ namespace CSharpWarrior
 
         public class RemoteExecutor : MarshalByRefObject
         {
-            public string Execute(string pathToAssembly)
+            public string Execute(string pathToAssembly, Level level)
             {
                 var loadedAssembly = Assembly.LoadFrom(pathToAssembly);
                 var player = (from type in loadedAssembly.GetTypes()
@@ -69,9 +72,16 @@ namespace CSharpWarrior
                 {
                     throw new CodeExecutionException(IncorrectCodeMessage);
                 }
+                return Play(level, player);
+            }
+
+            public string Play(Level level, IPlayer player)
+            {
                 try
                 {
-                    return player.Play();
+                    var levelRunner = new LevelCrawler(level, player);
+                    levelRunner.Crawl();
+                    return "Level complete";
                 }
                 catch (SecurityException ex)
                 {
@@ -91,11 +101,7 @@ namespace CSharpWarrior
                 AppDomain.Unload(sandboxAppDomain);
                 sandboxAppDomain = null;
             }
-            if (null != compiler)
-            {
-                compiler.Dispose();
-                compiler = null;
-            }
+            compiler.Dispose();
         }
     }
 }

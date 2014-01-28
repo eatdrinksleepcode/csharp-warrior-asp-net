@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System.Web.Http;
 
 namespace CSharpWarrior.Controllers
@@ -12,7 +11,7 @@ namespace CSharpWarrior.Controllers
             var codeToCompile = (string)code["code"];
             using (var sandbox = new Sandbox())
             {
-                return sandbox.Execute(codeToCompile);
+                return sandbox.ExecuteCode(codeToCompile, new Level());
             }
         }
     }

@@ -5,11 +5,13 @@ namespace CSharpWarrior
     public class SandboxTest
     {
         private Sandbox sandbox;
+        private Level level;
 
         [SetUp]
         public void Before()
         {
             sandbox = new Sandbox();
+            level = new Level {StartPosition = 0, ExitPosition = 1};
         }
 
         [Test]
@@ -17,68 +19,62 @@ namespace CSharpWarrior
         {
             const string WorkingCode = @"
                 public class Player : CSharpWarrior.IPlayer {
-                    public string Play() {
-                        return ""Success"";
+                    public CSharpWarrior.Action Play() {
+                        return new CSharpWarrior.WalkAction();
                     }
                 }
                 ";
-            Assert.That(sandbox.Execute(WorkingCode), 
-            Is.EqualTo("Success"));
-        }
-
-        [Test]
-        public void ShouldFailToRunNonCompilingCode()
-        {
-            const string NonCompilingCode = @"
-                public class Player {
-                ";
-            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(NonCompilingCode));
-            StringAssert.StartsWith(Sandbox.BadCodeMessage, ex.Message);
+            Assert.That(sandbox.ExecuteCode(WorkingCode, level), 
+            Is.EqualTo("Level complete"));
         }
 
         [Test]
         public void ShouldFailToRunIncorrectCode()
         {
             const string IncorrectCode = @"
-                public class Player {
-                    public string Play() {
-                        return ""Failure"";
-                    }
+                public class Player { // Does not implement IPlayer
                 }
                 ";
-            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(IncorrectCode));
+            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.ExecuteCode(IncorrectCode, level));
             Assert.That(ex.Message, Is.EqualTo(Sandbox.IncorrectCodeMessage));
         }
 
+        // TODO: implement by mocking LevelCrawler?
         [Test]
         public void ShouldFailToRunFaultyCode()
         {
             const string FaultyCode = @"
                 public class Player : CSharpWarrior.IPlayer {
-                    public string Play() {
+                    public CSharpWarrior.Action Play() {
                         throw new System.Exception(""Fail!"");
                     }
                 }
                 ";
-            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(FaultyCode));
+            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.ExecuteCode(FaultyCode, level));
             Assert.That(ex.Message, Is.EqualTo(Sandbox.FaultyCodeMessage));
             Assert.That(ex.InnerException, Is.Not.Null);
         }
 
+        // TODO: implement by mocking LevelCrawler?
         [Test]
         public void ShouldFailToRunDangerousCode()
         {
             const string DangerousCode = @"
                 public class Player : CSharpWarrior.IPlayer {
-                    public string Play() {
+                    public CSharpWarrior.Action Play() {
                         System.IO.Directory.EnumerateFiles(@""C:\"");
-                        return ""Haha!"";
+                        return null;
                     }
                 }
                 ";
-            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.Execute(DangerousCode));
+            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.ExecuteCode(DangerousCode, level));
             Assert.That(ex.Message, Is.EqualTo(Sandbox.DangerousCodeMessage));
             Assert.That(ex.InnerException, Is.Not.Null);
+        }
+
+        [Test]
+        public void ShouldPlayLevel()
+        {
         }
     }
 }
