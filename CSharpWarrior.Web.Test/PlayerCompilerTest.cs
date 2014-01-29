@@ -25,5 +25,14 @@ namespace CSharpWarrior
                 ";
             CollectionAssert.IsEmpty(compiler.Compile(ValidCode).Errors);
         }
+
+        [Test]
+        public void ShouldNotCompileInvalidCode()
+        {
+            const string InvalidCode = @"
+                foobar
+                ";
+            Assert.Throws<CodeCompilationException>(() => compiler.Compile(InvalidCode));
+        }
     }
 }

@@ -79,6 +79,9 @@
     <Compile Include="CodeExecutionException.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LevelController.cs" />
+    <Compile Include="DangerousCodeExecutionException.cs" />
+    <Compile Include="IAssembly.cs" />
+    <Compile Include="LevelCrawlerAgent.cs" />
     <Compile Include="PlayerCompiler.cs" />
     <Compile Include="Properties\AssemblyInfo.Version.cs" />
     <Compile Include="Global.asax.cs">
@@ -86,6 +89,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sandbox.cs" />
+    <Compile Include="SandboxAgent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />

@@ -16,7 +16,12 @@ namespace CSharpWarrior
 
         public CompilerResults Compile(string code)
         {
-            return compiler.CompileAssemblyFromSource(options, code);
+            var results = compiler.CompileAssemblyFromSource(options, code);
+            if (results.Errors.Count > 0)
+            {
+                throw new CodeCompilationException(results.Errors[0].ErrorText);
+            }
+            return results;
         }
 
         public void Dispose()

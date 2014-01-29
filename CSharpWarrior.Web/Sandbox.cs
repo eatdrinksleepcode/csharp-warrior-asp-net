@@ -1,12 +1,8 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Security.Policy;
-using Microsoft.CSharp;
 
 namespace CSharpWarrior
 {
@@ -15,83 +11,35 @@ namespace CSharpWarrior
         public const string DangerousCodeMessage = "Provided code attempted to access protected resources";
 
         public const string IncorrectCodeMessage =
-            "Code must have a public 'Player' class with a public static 'Play' method which takes no arguments and returns a String";
+            "Code must have one and only one class that implements the 'IPlayer' interface";
 
         public const string BadCodeMessage = "Code does not compile: ";
         public const string FaultyCodeMessage = "Code execution failed";
 
-        private static readonly Type ExecutorType = typeof(RemoteExecutor);
-
         private AppDomain sandboxAppDomain;
         private readonly PlayerCompiler compiler = new PlayerCompiler();
 
-        public string ExecuteCode(string codeToCompile, Level level)
+        public TAgent ExecuteAssembly<TAgent, TData>(string pathToAssembly, TData data) where TAgent: SandboxAgent
         {
-            var compiledCode = compiler.Compile(codeToCompile);
-            if (compiledCode.Errors.Count > 0)
-            {
-                throw new CodeExecutionException(BadCodeMessage +
-                                                 compiledCode.Errors.Cast<CompilerError>().First().ErrorText);
-            }
-
-            return ExecuteAssembly(compiledCode.PathToAssembly, level);
+            var sandboxAgent = CreateExecutor<TAgent>(pathToAssembly);
+            sandboxAgent.LoadAndExecute(pathToAssembly, data);
+            return sandboxAgent;
         }
 
-        public string ExecuteAssembly(string pathToAssembly, Level level)
+        private TAgent CreateExecutor<TAgent>(string pathToAssembly) where TAgent: SandboxAgent
         {
-            return CreateExecutor(pathToAssembly).Execute(pathToAssembly, level);
+            return (TAgent)Activator.CreateInstanceFrom(sandboxAppDomain ?? (sandboxAppDomain = CreateSandbox(pathToAssembly, typeof(TAgent))), typeof(TAgent).Assembly.ManifestModule.FullyQualifiedName,
+                typeof(TAgent).FullName).Unwrap();
         }
 
-        private RemoteExecutor CreateExecutor(string pathToAssembly)
-        {
-            return (RemoteExecutor)Activator.CreateInstanceFrom(sandboxAppDomain ?? (sandboxAppDomain = CreateSandbox(pathToAssembly)), ExecutorType.Assembly.ManifestModule.FullyQualifiedName,
-                ExecutorType.FullName).Unwrap();
-        }
-
-        private AppDomain CreateSandbox(string pathToAssembly)
+        private AppDomain CreateSandbox(string pathToAssembly, Type agentType)
         {
             var perms = new PermissionSet(PermissionState.None);
             perms.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
             perms.AddPermission(new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, Path.GetDirectoryName(pathToAssembly)));
+            perms.AddPermission(new FileIOPermission(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, Path.GetDirectoryName(agentType.Assembly.Location)));
 
-            return AppDomain.CreateDomain("Sandbox", null, AppDomain.CurrentDomain.SetupInformation, perms, ExecutorType.Assembly.Evidence.GetHostEvidence<StrongName>());
-        }
-
-        private static readonly Type IPlayerType = typeof (IPlayer);
-
-        public class RemoteExecutor : MarshalByRefObject
-        {
-            public string Execute(string pathToAssembly, Level level)
-            {
-                var loadedAssembly = Assembly.LoadFrom(pathToAssembly);
-                var player = (from type in loadedAssembly.GetTypes()
-                              where type.IsPublic && IPlayerType.IsAssignableFrom(type)
-                              select (IPlayer)Activator.CreateInstance(type)
-                             ).FirstOrDefault();
-                if (null == player)
-                {
-                    throw new CodeExecutionException(IncorrectCodeMessage);
-                }
-                return Play(level, player);
-            }
-
-            public string Play(Level level, IPlayer player)
-            {
-                try
-                {
-                    var levelRunner = new LevelCrawler(level, player);
-                    levelRunner.Crawl();
-                    return "Level complete";
-                }
-                catch (SecurityException ex)
-                {
-                    throw new CodeExecutionException(DangerousCodeMessage, ex);
-                }
-                catch (Exception ex)
-                {
-                    throw new CodeExecutionException(FaultyCodeMessage, ex);
-                }
-            }
+            return AppDomain.CreateDomain("Sandbox", null, AppDomain.CurrentDomain.SetupInformation, perms, agentType.Assembly.Evidence.GetHostEvidence<StrongName>());
         }
 
         public void Dispose()

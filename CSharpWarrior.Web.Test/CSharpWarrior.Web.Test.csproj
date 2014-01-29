@@ -31,9 +31,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\CSharpWarrior.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FluentAssertions">
       <HintPath>..\packages\FluentAssertions.2.1.0.0\lib\net40\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core">
       <HintPath>..\packages\NUnitTestAdapter.1.0\lib\nunit.core.dll</HintPath>
@@ -59,6 +68,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\CSharpWarrior.snk">
+      <Link>CSharpWarrior.snk</Link>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LevelControllerTest.cs" />
+    <Compile Include="LevelCrawlerAgentTest.cs" />
     <Compile Include="PlayerCompilerTest.cs" />
     <Compile Include="SandboxTest.cs" />
   </ItemGroup>

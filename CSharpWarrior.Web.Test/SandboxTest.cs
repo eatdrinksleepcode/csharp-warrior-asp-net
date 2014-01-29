@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using NUnit.Framework;
 
 namespace CSharpWarrior
 {
@@ -14,6 +17,24 @@ namespace CSharpWarrior
             level = new Level {StartPosition = 0, ExitPosition = 1};
         }
 
+        [Test]
+        public void ShouldFailToRunDangerousCode()
+        {
+            Assert.Throws<DangerousCodeExecutionException>(() =>
+                sandbox.ExecuteAssembly<DangerousAgent, object>(Assembly.GetExecutingAssembly().Location, null)
+                );
+        }
+
+        [Test]
+        public void ShouldFailToRunFaultyCode()
+        {
+            var ex = Assert.Throws<CodeExecutionException>(() =>
+                sandbox.ExecuteAssembly<FaultyAgent, object>(Assembly.GetExecutingAssembly().Location, null)
+                );
+            Assert.That(ex.InnerException, Is.TypeOf<Exception>());
+        }
+
+        /*
         [Test]
         public void ShouldRunProvidedCode()
         {
@@ -39,42 +60,26 @@ namespace CSharpWarrior
             Assert.That(ex.Message, Is.EqualTo(Sandbox.IncorrectCodeMessage));
         }
 
-        // TODO: implement by mocking LevelCrawler?
-        [Test]
-        public void ShouldFailToRunFaultyCode()
-        {
-            const string FaultyCode = @"
-                public class Player : CSharpWarrior.IPlayer {
-                    public CSharpWarrior.Action Play() {
-                        throw new System.Exception(""Fail!"");
-                    }
-                }
-                ";
-            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.ExecuteCode(FaultyCode, level));
-            Assert.That(ex.Message, Is.EqualTo(Sandbox.FaultyCodeMessage));
-            Assert.That(ex.InnerException, Is.Not.Null);
-        }
-
-        // TODO: implement by mocking LevelCrawler?
-        [Test]
-        public void ShouldFailToRunDangerousCode()
-        {
-            const string DangerousCode = @"
-                public class Player : CSharpWarrior.IPlayer {
-                    public CSharpWarrior.Action Play() {
-                        System.IO.Directory.EnumerateFiles(@""C:\"");
-                        return null;
-                    }
-                }
-                ";
-            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.ExecuteCode(DangerousCode, level));
-            Assert.That(ex.Message, Is.EqualTo(Sandbox.DangerousCodeMessage));
-            Assert.That(ex.InnerException, Is.Not.Null);
-        }
-
         [Test]
         public void ShouldPlayLevel()
         {
+        }
+ */
+    }
+
+    public class DangerousAgent : SandboxAgent
+    {
+        public override void Execute(IAssembly loadedAssembly, object data)
+        {
+            Directory.EnumerateFiles(@"C:");
+        }
+    }
+
+    public class FaultyAgent : SandboxAgent
+    {
+        public override void Execute(IAssembly loadedAssembly, object data)
+        {
+            throw new Exception("Fail!");
         }
     }
 }

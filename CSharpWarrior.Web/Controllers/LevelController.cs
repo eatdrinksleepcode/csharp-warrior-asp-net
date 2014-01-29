@@ -9,9 +9,14 @@ namespace CSharpWarrior.Controllers
         public string Post([FromBody]JToken code)
         {
             var codeToCompile = (string)code["code"];
-            using (var sandbox = new Sandbox())
+            using (var compiler = new PlayerCompiler())
             {
-                return sandbox.ExecuteCode(codeToCompile, new Level());
+                var compilerResults = compiler.Compile(codeToCompile);
+                using (var sandbox = new Sandbox())
+                {
+                    var agent = sandbox.ExecuteAssembly<LevelCrawlerAgent, Level>(compilerResults.PathToAssembly, new Level { StartPosition = 0, ExitPosition = 1});
+                    return "Level complete!";
+                }
             }
         }
     }
