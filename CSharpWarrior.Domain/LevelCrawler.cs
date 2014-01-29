@@ -22,13 +22,13 @@
             position = level.StartPosition;
             while (position != level.ExitPosition)
             {
-                var action = player.Play();
-                action.Act(this);
-                turns++;
                 if (turns >= MaximumTurns)
                 {
                     throw new LevelCrawlException();
                 }
+                var action = player.Play();
+                action.Act(this);
+                turns++;
             }
         }
 
