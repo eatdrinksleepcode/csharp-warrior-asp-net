@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="LevelCrawlException.cs" />
     <Compile Include="LevelCrawlerTest.cs" />
+    <Compile Include="LevelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSharpWarrior.Domain\CSharpWarrior.Domain.csproj">

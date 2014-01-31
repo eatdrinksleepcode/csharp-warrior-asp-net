@@ -1,11 +1,36 @@
 ﻿using System;
+using System.Linq;
 
 namespace CSharpWarrior
 {
     [Serializable]
     public class Level
     {
-        public int StartPosition { get; set; }
-        public int ExitPosition { get; set; }
+        private readonly Location[] locations;
+        private int warriorLocationIndex;
+
+        public Level(params Location[] locations)
+        {
+            if (locations.Length < 2)
+            {
+                throw new ArgumentException("Must have at least two locations", "locations");
+            }
+            this.locations = locations;
+        }
+
+        public Location WarriorPosition
+        {
+            get { return locations[warriorLocationIndex]; }
+        }
+
+        public void MoveWarrior()
+        {
+            warriorLocationIndex++;
+        }
+
+        public Location ExitPosition
+        {
+            get { return locations.Last(); }
+        }
     }
 }

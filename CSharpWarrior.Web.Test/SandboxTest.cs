@@ -14,7 +14,7 @@ namespace CSharpWarrior
         public void Before()
         {
             sandbox = new Sandbox();
-            level = new Level {StartPosition = 0, ExitPosition = 1};
+            level = new Level(new[] {new Location(), new Location(),});
         }
 
         [Test]

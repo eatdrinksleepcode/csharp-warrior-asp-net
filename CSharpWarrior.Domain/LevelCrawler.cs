@@ -5,8 +5,6 @@
         private readonly Level level;
         private readonly IPlayer player;
 
-        private int position;
-
         public LevelCrawler(Level level, IPlayer player)
         {
             this.level = level;
@@ -16,25 +14,19 @@
 
         public int MaximumTurns { get; set; }
 
-        public void Crawl()
+        public void CrawlLevel()
         {
             int turns = 0;
-            position = level.StartPosition;
-            while (position != level.ExitPosition)
+            while (level.WarriorPosition != level.ExitPosition)
             {
                 if (turns >= MaximumTurns)
                 {
-                    throw new LevelCrawlException();
+                    throw new LevelCrawlException(string.Format("Maximum number of turns ({0}) exceeded", MaximumTurns));
                 }
                 var action = player.Play();
-                action.Act(this);
+                action.Act(level);
                 turns++;
             }
-        }
-
-        public void Walk()
-        {
-            this.position++;
         }
     }
 }

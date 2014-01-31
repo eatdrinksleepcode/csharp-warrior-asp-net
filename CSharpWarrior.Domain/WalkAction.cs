@@ -2,9 +2,9 @@
 {
     public class WalkAction : Action
     {
-        public override void Act(LevelCrawler levelCrawler)
+        public override void Act(Level level)
         {
-            levelCrawler.Walk();
+            level.MoveWarrior();
         }
     }
 }

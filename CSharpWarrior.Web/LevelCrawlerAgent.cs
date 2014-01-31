@@ -17,7 +17,7 @@ namespace CSharpWarrior
                 throw new CodeExecutionException(Sandbox.IncorrectCodeMessage);
             }
             var crawler = new LevelCrawler(level, player[0]);
-            crawler.Crawl();
+            crawler.CrawlLevel();
         }
     }
 }
