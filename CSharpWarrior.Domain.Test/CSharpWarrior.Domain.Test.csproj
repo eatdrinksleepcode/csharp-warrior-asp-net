@@ -69,9 +69,10 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LevelCrawlException.cs" />
+    <Compile Include="DoorTest.cs" />
     <Compile Include="LevelCrawlerTest.cs" />
     <Compile Include="LevelTest.cs" />
+    <Compile Include="LocationElementTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSharpWarrior.Domain\CSharpWarrior.Domain.csproj">

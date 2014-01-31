@@ -19,11 +19,10 @@ namespace CSharpWarrior
         private AppDomain sandboxAppDomain;
         private readonly PlayerCompiler compiler = new PlayerCompiler();
 
-        public TAgent ExecuteAssembly<TAgent, TData>(string pathToAssembly, TData data) where TAgent: SandboxAgent
+        public void ExecuteAssembly<TAgent, TData>(string pathToAssembly, TData data) where TAgent: SandboxAgent
         {
             var sandboxAgent = CreateExecutor<TAgent>(pathToAssembly);
             sandboxAgent.LoadAndExecute(pathToAssembly, data);
-            return sandboxAgent;
         }
 
         private TAgent CreateExecutor<TAgent>(string pathToAssembly) where TAgent: SandboxAgent

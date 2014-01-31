@@ -32,5 +32,12 @@ namespace CSharpWarrior
         {
             get { return locations.Last(); }
         }
+
+        public void ActOut(Action action)
+        {
+            WarriorPosition.TryHandleBefore(action);
+            action.Act(this);
+            WarriorPosition.TryHandleAfter(action);
+        }
     }
 }

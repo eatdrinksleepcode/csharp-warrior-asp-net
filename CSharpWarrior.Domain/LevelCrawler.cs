@@ -24,7 +24,7 @@
                     throw new LevelCrawlException(string.Format("Maximum number of turns ({0}) exceeded", MaximumTurns));
                 }
                 var action = player.Play();
-                action.Act(level);
+                level.ActOut(action);
                 turns++;
             }
         }
