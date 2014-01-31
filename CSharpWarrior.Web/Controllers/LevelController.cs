@@ -14,7 +14,7 @@ namespace CSharpWarrior.Controllers
                 var compilerResults = compiler.Compile(codeToCompile);
                 using (var sandbox = new Sandbox())
                 {
-                    sandbox.ExecuteAssembly<LevelCrawlerAgent, Level>(compilerResults.PathToAssembly, new LevelFactory().MakeLevel2());
+                    sandbox.ExecuteAssembly<LevelCrawlerAgent, Level>(compilerResults.PathToAssembly, new LevelFactory().MakeLevel1());
                     return "Level complete!";
                 }
             }
