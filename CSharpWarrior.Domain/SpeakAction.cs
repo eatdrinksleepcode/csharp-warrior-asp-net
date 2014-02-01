@@ -1,6 +1,6 @@
 ﻿namespace CSharpWarrior
 {
-    public class SpeakAction : Action
+    public class SpeakAction : WarriorAction
     {
         private readonly string message;
 

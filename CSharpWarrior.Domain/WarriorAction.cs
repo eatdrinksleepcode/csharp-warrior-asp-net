@@ -1,6 +1,6 @@
 ﻿namespace CSharpWarrior
 {
-    public abstract class Action
+    public abstract class WarriorAction
     {
         public abstract void Act(Level level);
     }

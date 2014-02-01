@@ -1,6 +1,6 @@
 ﻿namespace CSharpWarrior
 {
-    public class WalkAction : Action
+    public class WalkAction : WarriorAction
     {
         public override void Act(Level level)
         {

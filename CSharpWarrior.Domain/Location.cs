@@ -12,7 +12,7 @@ namespace CSharpWarrior
             this.locationElements = locationElements;
         }
 
-        public void TryHandleBefore(Action action)
+        public void TryHandleBefore(WarriorAction action)
         {
             foreach (var element in locationElements)
             {
@@ -20,7 +20,7 @@ namespace CSharpWarrior
             }
         }
 
-        public void TryHandleAfter(Action action)
+        public void TryHandleAfter(WarriorAction action)
         {
             foreach (var element in locationElements)
             {

@@ -7,7 +7,7 @@
     "using CSharpWarrior;\n" +
     "\n" +
     "public class Player : IPlayer {\n" +
-    "    public Action Play() {\n" +
+    "    public WarriorAction Play() {\n" +
     "        return new WalkAction();\n" +
     "    }\n" +
     "}\n" +

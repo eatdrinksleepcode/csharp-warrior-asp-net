@@ -4,7 +4,7 @@ namespace CSharpWarrior
 {
     public class LocationElementTest
     {
-        private class TestAction : Action
+        private class TestAction : WarriorAction
         {
             public override void Act(Level level)
             {

@@ -40,7 +40,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action.cs" />
+    <Compile Include="WarriorAction.cs" />
     <Compile Include="Door.cs" />
     <Compile Include="IHandleAfter.cs" />
     <Compile Include="IHandleBefore.cs" />

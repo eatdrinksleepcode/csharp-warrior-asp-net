@@ -40,7 +40,7 @@ namespace CSharpWarrior
         {
             const string WorkingCode = @"
                 public class Player : CSharpWarrior.IPlayer {
-                    public CSharpWarrior.Action Play() {
+                    public CSharpWarrior.WarriorAction Play() {
                         return new CSharpWarrior.WalkAction();
                     }
                 }

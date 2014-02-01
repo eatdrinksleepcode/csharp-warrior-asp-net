@@ -18,7 +18,7 @@ namespace CSharpWarrior
             const string ValidCode = @"
                 using CSharpWarrior;
                 public class Player : IPlayer {
-                    public Action Play() {
+                    public WarriorAction Play() {
                         return new WalkAction();
                     }
                 }

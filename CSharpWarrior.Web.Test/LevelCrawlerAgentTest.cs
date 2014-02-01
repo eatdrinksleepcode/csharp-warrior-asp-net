@@ -7,7 +7,7 @@ namespace CSharpWarrior
     {
         public class ValidPlayer : IPlayer
         {
-            public Action Play()
+            public WarriorAction Play()
             {
                 return new WalkAction();
             }

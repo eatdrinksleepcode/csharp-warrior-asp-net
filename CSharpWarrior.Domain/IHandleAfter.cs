@@ -1,6 +1,6 @@
 ﻿namespace CSharpWarrior
 {
-    public interface IHandleAfter<in T> where T: Action
+    public interface IHandleAfter<in T> where T: WarriorAction
     {
         void HandleAfter(T action);
     }

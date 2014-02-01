@@ -2,6 +2,6 @@
 {
     public interface IPlayer
     {
-        Action Play();
+        WarriorAction Play();
     }
 }

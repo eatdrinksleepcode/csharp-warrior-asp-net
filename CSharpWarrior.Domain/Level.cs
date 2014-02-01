@@ -33,7 +33,7 @@ namespace CSharpWarrior
             get { return locations.Last(); }
         }
 
-        public void ActOut(Action action)
+        public void ActOut(WarriorAction action)
         {
             WarriorPosition.TryHandleBefore(action);
             action.Act(this);
