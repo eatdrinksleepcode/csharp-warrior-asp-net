@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
+using NUnit.Framework;
 
 namespace CSharpWarrior
 {
@@ -23,7 +24,10 @@ namespace CSharpWarrior
                     }
                 }
                 ";
-            CollectionAssert.IsEmpty(compiler.Compile(ValidCode).Errors);
+
+            var compilation = compiler.Compile(ValidCode);
+
+            compilation.Errors.Should().BeEmpty();
         }
 
         [Test]
@@ -32,7 +36,10 @@ namespace CSharpWarrior
             const string InvalidCode = @"
                 foobar
                 ";
-            Assert.Throws<CodeCompilationException>(() => compiler.Compile(InvalidCode));
+
+
+            compiler.Invoking(c => c.Compile(InvalidCode))
+                .ShouldThrow<CodeCompilationException>();
         }
     }
 }

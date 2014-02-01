@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace CSharpWarrior
@@ -8,63 +9,31 @@ namespace CSharpWarrior
     public class SandboxTest
     {
         private Sandbox sandbox;
-        private Level level;
+        private Level anyLevel;
 
         [SetUp]
         public void Before()
         {
             sandbox = new Sandbox();
-            level = new Level(new[] {new Location(), new Location(),});
+            anyLevel = null;
         }
 
         [Test]
         public void ShouldFailToRunDangerousCode()
         {
-            Assert.Throws<DangerousCodeExecutionException>(() =>
-                sandbox.ExecuteAssembly<DangerousAgent, object>(Assembly.GetExecutingAssembly().Location, null)
-                );
+            sandbox.Invoking(
+                s => s.ExecuteAssembly<DangerousAgent, object>(Assembly.GetExecutingAssembly().Location, anyLevel))
+                .ShouldThrow<DangerousCodeExecutionException>();
         }
 
         [Test]
         public void ShouldFailToRunFaultyCode()
         {
-            var ex = Assert.Throws<CodeExecutionException>(() =>
-                sandbox.ExecuteAssembly<FaultyAgent, object>(Assembly.GetExecutingAssembly().Location, null)
-                );
-            Assert.That(ex.InnerException, Is.TypeOf<Exception>());
+            sandbox.Invoking(
+                s => s.ExecuteAssembly<FaultyAgent, object>(Assembly.GetExecutingAssembly().Location, anyLevel))
+                .ShouldThrow<CodeExecutionException>()
+                .WithInnerException<Exception>();
         }
-
-        /*
-        [Test]
-        public void ShouldRunProvidedCode()
-        {
-            const string WorkingCode = @"
-                public class Player : CSharpWarrior.IPlayer {
-                    public CSharpWarrior.WarriorAction Play() {
-                        return new CSharpWarrior.WalkAction();
-                    }
-                }
-                ";
-            Assert.That(sandbox.ExecuteCode(WorkingCode, level), 
-            Is.EqualTo("Level complete"));
-        }
-
-        [Test]
-        public void ShouldFailToRunIncorrectCode()
-        {
-            const string IncorrectCode = @"
-                public class Player { // Does not implement IPlayer
-                }
-                ";
-            var ex = Assert.Throws<CodeExecutionException>(() => sandbox.ExecuteCode(IncorrectCode, level));
-            Assert.That(ex.Message, Is.EqualTo(Sandbox.IncorrectCodeMessage));
-        }
-
-        [Test]
-        public void ShouldPlayLevel()
-        {
-        }
- */
     }
 
     public class DangerousAgent : SandboxAgent

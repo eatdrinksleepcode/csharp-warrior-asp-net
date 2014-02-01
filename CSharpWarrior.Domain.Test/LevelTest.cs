@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace CSharpWarrior
@@ -18,13 +19,15 @@ namespace CSharpWarrior
         [Test]
         public void MustHaveAtLeastTwoLocations()
         {
-            Assert.Throws<ArgumentException>(() => new Level(new Location()));
+            Action invalidConstructor = () => new Level(new Location());
+
+            invalidConstructor.ShouldThrow<ArgumentException>();
         }
 
         [Test]
         public void WarriorShouldStartAtFirstLocation()
         {
-            Assert.That(defaultLevel.WarriorPosition, Is.EqualTo(locations[0]));
+            defaultLevel.WarriorPosition.Should().Be(locations[0]);
         }
 
         [Test]
@@ -32,7 +35,7 @@ namespace CSharpWarrior
         {
             defaultLevel.MoveWarrior();
 
-            Assert.That(defaultLevel.WarriorPosition, Is.EqualTo(locations[1]));
+            defaultLevel.WarriorPosition.Should().Be(locations[1]);
         }
     }
 }

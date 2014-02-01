@@ -66,6 +66,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\CSharpWarrior.snk">
@@ -77,7 +79,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LevelControllerTest.cs" />
     <Compile Include="LevelCrawlerAgentTest.cs" />
     <Compile Include="PlayerCompilerTest.cs" />
     <Compile Include="SandboxTest.cs" />

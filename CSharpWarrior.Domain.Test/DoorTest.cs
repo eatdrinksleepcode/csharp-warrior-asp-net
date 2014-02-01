@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace CSharpWarrior
 {
@@ -11,17 +13,30 @@ namespace CSharpWarrior
             var door = new Door(password);
 
             door.HandleAfter(new SpeakAction(password));
-            door.HandleBefore(new WalkAction());
+
+            door.Invoking(d => d.HandleBefore(new WalkAction()))
+                .ShouldNotThrow();
         }
 
         [Test]
-        public void ShouldNotAllowPassageIfTheCorrectPasswordHasNotBeenSpoken()
+        public void ShouldNotAllowPassageIfTheWrongPasswordHasBeenSpoken()
         {
             const string password = "Open Sesame";
             var door = new Door(password);
 
             door.HandleAfter(new SpeakAction(password + password));
-            Assert.Throws<LevelCrawlException>(() => door.HandleBefore(new WalkAction()));
+
+            door.Invoking(d => d.HandleBefore(new WalkAction()))
+                .ShouldThrow<LevelCrawlException>();
+        }
+
+        [Test]
+        public void ShouldNotAllowPassageIfNoPasswordHasBeenSpoken()
+        {
+            var door = new Door("Open Sesame");
+
+            door.Invoking(d => d.HandleBefore(new WalkAction()))
+                .ShouldThrow<LevelCrawlException>();
         }
     }
 }

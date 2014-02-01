@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 using NUnit.Framework;
 
 namespace CSharpWarrior
@@ -28,8 +29,10 @@ namespace CSharpWarrior
         {
             var assembly = new Mock<IAssembly>();
             assembly.Setup(a => a.GetTypes()).Returns(new[] {typeof (string)});
-            var ex = Assert.Throws<CodeExecutionException>(() => agent.Execute(assembly.Object, defaultLevel));
-            Assert.That(ex.Message, Is.EqualTo(Sandbox.IncorrectCodeMessage));
+
+            agent.Invoking(a => a.Execute(assembly.Object, defaultLevel))
+                .ShouldThrow<CodeExecutionException>()
+                .WithMessage(Sandbox.IncorrectCodeMessage);
         }
 
         [Test]
@@ -37,8 +40,10 @@ namespace CSharpWarrior
         {
             var assembly = new Mock<IAssembly>();
             assembly.Setup(a => a.GetTypes()).Returns(new[] { typeof(ValidPlayer), typeof(ValidPlayer) });
-            var ex = Assert.Throws<CodeExecutionException>(() => agent.Execute(assembly.Object, defaultLevel));
-            Assert.That(ex.Message, Is.EqualTo(Sandbox.IncorrectCodeMessage));
+
+            agent.Invoking(a => a.Execute(assembly.Object, defaultLevel))
+                .ShouldThrow<CodeExecutionException>()
+                .WithMessage(Sandbox.IncorrectCodeMessage);
         }
 
         [Test]
@@ -46,7 +51,9 @@ namespace CSharpWarrior
         {
             var assembly = new Mock<IAssembly>();
             assembly.Setup(a => a.GetTypes()).Returns(new[] {typeof (ValidPlayer)});
-            agent.Execute(assembly.Object, defaultLevel);
+
+            agent.Invoking(a => a.Execute(assembly.Object, defaultLevel))
+                .ShouldNotThrow();
         }
     }
 }

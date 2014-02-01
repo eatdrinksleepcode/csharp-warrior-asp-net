@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
+using NUnit.Framework;
 
 namespace CSharpWarrior
 {
@@ -37,7 +38,7 @@ namespace CSharpWarrior
             var action = new TestAction();
             element.TryHandleBefore(action);
 
-            Assert.That(element.HandledAction, Is.True);
+            element.HandledAction.Should().BeTrue();
         }
 
         [Test]
@@ -47,7 +48,7 @@ namespace CSharpWarrior
             var action = new TestAction();
             element.TryHandleBefore(action);
 
-            Assert.That(element.HandledAction, Is.False);
+            element.HandledAction.Should().BeFalse();
         }
     }
 }

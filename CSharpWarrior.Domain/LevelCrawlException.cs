@@ -11,7 +11,7 @@ namespace CSharpWarrior
         {
         }
 
-        protected LevelCrawlException(SerializationInfo info, StreamingContext context) 
+        protected LevelCrawlException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

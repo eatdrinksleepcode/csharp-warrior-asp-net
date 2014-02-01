@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 
@@ -18,7 +19,10 @@ namespace CSharpWarrior
             var player = new Mock<IPlayer>();
             player.Setup(p => p.Play()).Returns(new WalkAction());
             var crawler = new LevelCrawler(level, player.Object) {MaximumTurns = 1};
-            crawler.CrawlLevel();
+
+            crawler.Invoking(c => c.CrawlLevel())
+                .ShouldNotThrow();
+            // TODO: add better assertion here
         }
 
         [Test]
@@ -27,8 +31,10 @@ namespace CSharpWarrior
             var level = new Level(MakeLocations(3));
             var player = new Mock<IPlayer>();
             player.Setup(p => p.Play()).Returns(new WalkAction());
-            var runner = new LevelCrawler(level, player.Object) { MaximumTurns = 1 };
-            Assert.Throws<LevelCrawlException>(() => runner.CrawlLevel());
+            var crawler = new LevelCrawler(level, player.Object) { MaximumTurns = 1 };
+
+            crawler.Invoking(c => c.CrawlLevel())
+                .ShouldThrow<LevelCrawlException>();
         }
     }
 }
