@@ -14,18 +14,23 @@
 
         public int MaximumTurns { get; set; }
 
-        public void CrawlLevel()
+        public string CrawlLevel()
         {
-            int turns = 0;
-            while (level.WarriorPosition != level.ExitPosition)
+            using (var context = new CrawlContext())
             {
-                if (turns >= MaximumTurns)
+                int turns = 0;
+                while (level.WarriorPosition != level.ExitPosition)
                 {
-                    throw new LevelCrawlException(string.Format("Maximum number of turns ({0}) exceeded", MaximumTurns));
+                    if (turns >= MaximumTurns)
+                    {
+                        throw new LevelCrawlException(string.Format("Maximum number of turns ({0}) exceeded",
+                            MaximumTurns));
+                    }
+                    var action = player.Play();
+                    level.ActOut(action, context);
+                    turns++;
                 }
-                var action = player.Play();
-                level.ActOut(action);
-                turns++;
+                return context.ToCrawlLog();
             }
         }
     }

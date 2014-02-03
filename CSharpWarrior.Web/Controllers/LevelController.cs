@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.IO;
+using System.Text;
+using Newtonsoft.Json.Linq;
 using System.Web.Http;
 
 namespace CSharpWarrior.Controllers
@@ -6,16 +8,19 @@ namespace CSharpWarrior.Controllers
     public class LevelController : ApiController
     {
         [HttpPost]
-        public string Post([FromBody]JToken code)
+        public object Post([FromBody]JToken code)
         {
             var codeToCompile = (string)code["code"];
             using (var compiler = new PlayerCompiler())
             {
                 var compilerResults = compiler.Compile(codeToCompile);
+                var level = new LevelFactory().MakeLevel1();
                 using (var sandbox = new Sandbox())
                 {
-                    sandbox.ExecuteAssembly<LevelCrawlerAgent, Level>(compilerResults.PathToAssembly, new LevelFactory().MakeLevel1());
-                    return "Level complete!";
+                    return new
+                    {
+                        Log = (string)sandbox.ExecuteAssembly<LevelCrawlerAgent, Level>(compilerResults.PathToAssembly, level)
+                    };
                 }
             }
         }

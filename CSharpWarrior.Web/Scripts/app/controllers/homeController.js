@@ -15,7 +15,7 @@
             $scope.run = function () {
                 $http.post('/api/level', { code: $scope.code })
                 .success(function (data) {
-                    $scope.output = data;
+                    $scope.output = data.Log;
                 });
             };
         }]

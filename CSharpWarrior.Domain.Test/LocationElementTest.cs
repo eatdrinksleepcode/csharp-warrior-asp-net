@@ -1,13 +1,22 @@
 ﻿using FluentAssertions;
+using Moq;
 using NUnit.Framework;
 
 namespace CSharpWarrior
 {
     public class LocationElementTest
     {
+        private Mock<ICrawlContext> context;
+
+        [SetUp]
+        public void Before()
+        {
+            context = new Mock<ICrawlContext>();
+        }
+
         private class TestAction : WarriorAction
         {
-            public override void Act(Level level)
+            public override void Act(Level level, ICrawlContext context)
             {
             }
         }
@@ -16,7 +25,7 @@ namespace CSharpWarrior
         {
             public bool HandledAction { get; private set; }
 
-            public void HandleBefore(TestAction action)
+            public void HandleBefore(TestAction action, ICrawlContext context)
             {
                 HandledAction = true;
             }
@@ -25,7 +34,7 @@ namespace CSharpWarrior
         {
             public bool HandledAction { get; private set; }
 
-            public void Handle(TestAction action)
+            public void HandleBefore(TestAction action, ICrawlContext context)
             {
                 HandledAction = true;
             }
@@ -36,7 +45,7 @@ namespace CSharpWarrior
         {
             var element = new ActiveLocationElement();
             var action = new TestAction();
-            element.TryHandleBefore(action);
+            element.TryHandleBefore(action, context.Object);
 
             element.HandledAction.Should().BeTrue();
         }
@@ -46,7 +55,7 @@ namespace CSharpWarrior
         {
             var element = new LazyLocationElement();
             var action = new TestAction();
-            element.TryHandleBefore(action);
+            element.TryHandleBefore(action, context.Object);
 
             element.HandledAction.Should().BeFalse();
         }

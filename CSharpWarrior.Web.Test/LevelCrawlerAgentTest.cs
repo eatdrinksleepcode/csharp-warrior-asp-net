@@ -54,6 +54,7 @@ namespace CSharpWarrior
 
             agent.Invoking(a => a.Execute(assembly.Object, defaultLevel))
                 .ShouldNotThrow();
+            // TODO: add better assert here
         }
     }
 }

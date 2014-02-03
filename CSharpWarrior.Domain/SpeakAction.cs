@@ -9,8 +9,9 @@
             this.message = message;
         }
 
-        public override void Act(Level level)
+        public override void Act(Level level, ICrawlContext log)
         {
+            log.WriteLineToCrawLog("Spartacus says '{0}'", message);
         }
 
         public string Message

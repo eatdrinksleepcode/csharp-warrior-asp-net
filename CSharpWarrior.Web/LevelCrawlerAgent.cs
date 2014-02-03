@@ -5,7 +5,7 @@ namespace CSharpWarrior
 {
     public class LevelCrawlerAgent : SandboxAgent
     {
-        public override void Execute(IAssembly loadedAssembly, object data)
+        public override object Execute(IAssembly loadedAssembly, object data)
         {
             var level = (Level)data;
             var player = (from type in loadedAssembly.GetTypes()
@@ -17,7 +17,7 @@ namespace CSharpWarrior
                 throw new CodeExecutionException(Sandbox.IncorrectCodeMessage);
             }
             var crawler = new LevelCrawler(level, player[0]);
-            crawler.CrawlLevel();
+            return crawler.CrawlLevel();
         }
     }
 }

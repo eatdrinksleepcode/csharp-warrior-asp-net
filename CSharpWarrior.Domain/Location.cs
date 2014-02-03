@@ -12,19 +12,19 @@ namespace CSharpWarrior
             this.locationElements = locationElements;
         }
 
-        public void TryHandleBefore(WarriorAction action)
+        public void TryHandleBefore(WarriorAction action, ICrawlContext context)
         {
             foreach (var element in locationElements)
             {
-                element.TryHandleBefore(action);
+                element.TryHandleBefore(action, context);
             }
         }
 
-        public void TryHandleAfter(WarriorAction action)
+        public void TryHandleAfter(WarriorAction action, ICrawlContext context)
         {
             foreach (var element in locationElements)
             {
-                element.TryHandleAfter(action);
+                element.TryHandleAfter(action, context);
             }
         }
     }

@@ -21,12 +21,12 @@ namespace CSharpWarrior
             }
         }
 
-        public void LoadAndExecute(string pathToAssembly, object data)
+        public object LoadAndExecute(string pathToAssembly, object data)
         {
             var loadedAssembly = Assembly.LoadFrom(pathToAssembly);
             try
             {
-                Execute(new AssemblyWrapper(loadedAssembly), data);
+                return Execute(new AssemblyWrapper(loadedAssembly), data);
             }
             catch (SecurityException ex)
             {
@@ -38,6 +38,6 @@ namespace CSharpWarrior
             }
         }
 
-        public abstract void Execute(IAssembly loadedAssembly, object data);
+        public abstract object Execute(IAssembly loadedAssembly, object data);
     }
 }

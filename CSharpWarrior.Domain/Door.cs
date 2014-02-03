@@ -13,7 +13,7 @@ namespace CSharpWarrior
             this.password = password;
         }
 
-        public void HandleBefore(WalkAction action)
+        public void HandleBefore(WalkAction action, ICrawlContext context)
         {
             if (!isOpen)
             {
@@ -21,11 +21,12 @@ namespace CSharpWarrior
             }
         }
 
-        public void HandleAfter(SpeakAction action)
+        public void HandleAfter(SpeakAction action, ICrawlContext context)
         {
             if (action.Message == password)
             {
                 isOpen = true;
+                context.WriteLineToCrawLog("The door opens!");
             }
         }
     }

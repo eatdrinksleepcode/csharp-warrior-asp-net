@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 
 namespace CSharpWarrior
@@ -33,11 +34,11 @@ namespace CSharpWarrior
             get { return locations.Last(); }
         }
 
-        public void ActOut(WarriorAction action)
+        public void ActOut(WarriorAction action, ICrawlContext log)
         {
-            WarriorPosition.TryHandleBefore(action);
-            action.Act(this);
-            WarriorPosition.TryHandleAfter(action);
+            WarriorPosition.TryHandleBefore(action, log);
+            action.Act(this, log);
+            WarriorPosition.TryHandleAfter(action, log);
         }
     }
 }

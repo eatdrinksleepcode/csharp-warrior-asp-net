@@ -2,6 +2,6 @@
 {
     public interface IHandleBefore<in T> where T: WarriorAction
     {
-        void HandleBefore(T action);
+        void HandleBefore(T action, ICrawlContext context);
     }
 }
