@@ -8,14 +8,6 @@ namespace CSharpWarrior
 {
     public class Sandbox : IDisposable
     {
-        public const string DangerousCodeMessage = "Provided code attempted to access protected resources";
-
-        public const string IncorrectCodeMessage =
-            "Code must have one and only one class that implements the 'IPlayer' interface";
-
-        public const string BadCodeMessage = "Code does not compile: ";
-        public const string FaultyCodeMessage = "Code execution failed";
-
         private AppDomain sandboxAppDomain;
         private readonly PlayerCompiler compiler = new PlayerCompiler();
 

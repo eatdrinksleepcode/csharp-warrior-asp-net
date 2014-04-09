@@ -32,7 +32,7 @@ namespace CSharpWarrior
 
             agent.Invoking(a => a.Execute(assembly.Object, defaultLevel))
                 .ShouldThrow<CodeExecutionException>()
-                .WithMessage(Sandbox.IncorrectCodeMessage);
+                .WithMessage(LevelCrawlerAgent.IncorrectCodeMessage);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace CSharpWarrior
 
             agent.Invoking(a => a.Execute(assembly.Object, defaultLevel))
                 .ShouldThrow<CodeExecutionException>()
-                .WithMessage(Sandbox.IncorrectCodeMessage);
+                .WithMessage(LevelCrawlerAgent.IncorrectCodeMessage);
         }
 
         [Test]

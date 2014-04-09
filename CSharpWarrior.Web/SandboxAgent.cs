@@ -6,6 +6,9 @@ namespace CSharpWarrior
 {
     public abstract class SandboxAgent : MarshalByRefObject
     {
+        private const string DangerousCodeMessage = "Provided code attempted to access protected resources";
+        private const string FaultyCodeMessage = "Code execution failed";
+
         private class AssemblyWrapper : IAssembly
         {
             private readonly Assembly source;
@@ -30,11 +33,11 @@ namespace CSharpWarrior
             }
             catch (SecurityException ex)
             {
-                throw new DangerousCodeExecutionException(Sandbox.DangerousCodeMessage, ex);
+                throw new DangerousCodeExecutionException(DangerousCodeMessage, ex);
             }
             catch (Exception ex)
             {
-                throw new CodeExecutionException(Sandbox.FaultyCodeMessage, ex);
+                throw new CodeExecutionException(FaultyCodeMessage, ex);
             }
         }
 

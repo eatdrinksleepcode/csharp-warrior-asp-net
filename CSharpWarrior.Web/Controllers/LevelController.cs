@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Text;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System.Web.Http;
 
 namespace CSharpWarrior.Controllers
