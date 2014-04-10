@@ -73,7 +73,7 @@
     <Compile Include="LevelCrawlerTest.cs" />
     <Compile Include="LevelCrawlExceptionTest.cs" />
     <Compile Include="LevelTest.cs" />
-    <Compile Include="LocationElementTest.cs" />
+    <Compile Include="LocationTest.cs" />
     <Compile Include="SerializationTestExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

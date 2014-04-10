@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace CSharpWarrior
 {
@@ -14,17 +15,27 @@ namespace CSharpWarrior
 
         public void TryHandleBefore(WarriorAction action, ICrawlContext context)
         {
-            foreach (var element in locationElements)
+            HandleBefore((dynamic) action, context);
+        }
+
+        private void HandleBefore<T>(T action, ICrawlContext context) where T : WarriorAction
+        {
+            foreach (var element in locationElements.OfType<IHandleBefore<T>>())
             {
-                element.TryHandleBefore(action, context);
+                element.HandleBefore(action, context);
             }
         }
 
         public void TryHandleAfter(WarriorAction action, ICrawlContext context)
         {
-            foreach (var element in locationElements)
+            HandleAfter((dynamic) action, context);
+        }
+
+        private void HandleAfter<T>(T action, ICrawlContext context) where T : WarriorAction
+        {
+            foreach (var element in locationElements.OfType<IHandleAfter<T>>())
             {
-                element.TryHandleAfter(action, context);
+                element.HandleAfter(action, context);
             }
         }
     }

@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace CSharpWarrior
 {
-    public class LocationElementTest
+    public class LocationTest
     {
         private Mock<ICrawlContext> context;
 
@@ -14,7 +14,7 @@ namespace CSharpWarrior
             context = new Mock<ICrawlContext>();
         }
 
-        private class TestAction : WarriorAction
+        public class TestAction : WarriorAction
         {
             public override void Act(Level level, ICrawlContext context)
             {
@@ -44,8 +44,9 @@ namespace CSharpWarrior
         public void ShouldHandleDeclaredActions()
         {
             var element = new ActiveLocationElement();
+            var location = new Location(element);
             var action = new TestAction();
-            element.TryHandleBefore(action, context.Object);
+            location.TryHandleBefore(action, context.Object);
 
             element.HandledAction.Should().BeTrue();
         }
@@ -54,8 +55,9 @@ namespace CSharpWarrior
         public void ShouldNotHandleUndeclaredActions()
         {
             var element = new LazyLocationElement();
+            var location = new Location(element);
             var action = new TestAction();
-            element.TryHandleBefore(action, context.Object);
+            location.TryHandleBefore(action, context.Object);
 
             element.HandledAction.Should().BeFalse();
         }
