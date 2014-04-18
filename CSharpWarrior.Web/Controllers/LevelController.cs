@@ -12,7 +12,7 @@ namespace CSharpWarrior.Controllers
             using (var compiler = new PlayerCompiler())
             {
                 var compilerResults = compiler.Compile(codeToCompile);
-                var level = new LevelFactory().MakeLevel1();
+                var level = new LevelFactory().MakeLevel(code["levelIndex"].ToObject<int>());
                 using (var sandbox = new Sandbox())
                 {
                     return new

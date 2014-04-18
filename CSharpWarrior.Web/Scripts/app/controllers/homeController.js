@@ -12,8 +12,11 @@
     "    }\n" +
     "}\n" +
     "";
+            $scope.level = 1;
+
             $scope.run = function () {
-                $http.post('/api/level', { code: $scope.code })
+                $scope.output = '';
+                $http.post('/api/level', { levelIndex: $scope.level, code: $scope.code })
                 .success(function (data) {
                     $scope.output = data.Log;
                 });

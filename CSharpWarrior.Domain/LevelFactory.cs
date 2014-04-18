@@ -1,26 +1,34 @@
-﻿namespace CSharpWarrior
+﻿using System;
+
+namespace CSharpWarrior
 {
     public class LevelFactory
     {
-        public Level MakeLevel1()
+        private static readonly Func<Level>[] Factories =
         {
-            return new Level(
-                new Location(), 
-                new Location(), 
-                new Location(), 
+            () => new Level(
+                new Location(),
+                new Location(),
+                new Location(),
                 new Location(),
                 new Location()
-                );
-        }
-        public Level MakeLevel2()
-        {
-            return new Level(
-                new Location(), 
-                new Location(), 
-                new Location(), 
+                ),
+            () => new Level(
+                new Location(),
+                new Location(),
+                new Location(),
                 new Location(new Door("Open Sesame")),
                 new Location()
-                );
+                )
+        };
+
+        public Level MakeLevel(int index)
+        {
+            index--;
+            if(index >= 0 && index < Factories.Length)
+                return Factories[index]();
+
+            throw new ArgumentOutOfRangeException("index");
         }
     }
 }
