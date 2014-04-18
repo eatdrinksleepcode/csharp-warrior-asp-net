@@ -18,7 +18,7 @@ namespace CSharpWarrior
             HandleBefore((dynamic) action, context);
         }
 
-        private void HandleBefore<T>(T action, ICrawlContext context) where T : WarriorAction
+        public void HandleBefore<T>(T action, ICrawlContext context) where T : WarriorAction
         {
             foreach (var element in locationElements.OfType<IHandleBefore<T>>())
             {
@@ -31,7 +31,7 @@ namespace CSharpWarrior
             HandleAfter((dynamic) action, context);
         }
 
-        private void HandleAfter<T>(T action, ICrawlContext context) where T : WarriorAction
+        public void HandleAfter<T>(T action, ICrawlContext context) where T : WarriorAction
         {
             foreach (var element in locationElements.OfType<IHandleAfter<T>>())
             {
