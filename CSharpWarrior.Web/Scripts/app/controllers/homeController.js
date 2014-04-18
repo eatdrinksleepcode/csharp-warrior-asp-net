@@ -19,6 +19,10 @@
                 $http.post('/api/level', { levelIndex: $scope.level, code: $scope.code })
                 .success(function (data) {
                     $scope.output = data.Log;
+                })
+                .error(function (data) {
+                    $scope.output = data.ExceptionMessage || data.Message;
+                    console.log(data);
                 });
             };
         }]
